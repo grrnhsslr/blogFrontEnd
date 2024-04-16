@@ -1,3 +1,7 @@
 body {
-    background-color: rgb(115, 163, 236);
+    background-color: rgb(4, 49, 117);
+}
+
+.bg-custom {
+    background-color: rgb(40, 4, 80);
 }
