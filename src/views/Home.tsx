@@ -5,7 +5,8 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import PostCard from '../components/PostCard';
-import { PostType } from '../types';
+import PostForm from '../components/PostForm';
+import { PostFormDataType, PostType } from '../types';
 
 
 type Sorting = {
@@ -23,6 +24,7 @@ type HomeProps = {
 
 export default function Home({isLoggedIn, handleClick   }: HomeProps) {
 
+const [showForm, setShowForm] = useState(false);
     const [posts, setPosts] = useState<PostType[]>([
         {
             author: {
@@ -43,13 +45,13 @@ export default function Home({isLoggedIn, handleClick   }: HomeProps) {
                 dateCreated: "Tue, 14 Apr 2024 16:58:44 GMT",
                 email: "Garrens@codingtemple.com",
                 firstName: "Garren",
-                id: 2,
+                id: 1,
                 lastName: "hassler",
                 username: "ghassler"
             },
             body: "I love React!",
             dateCreated: "Tue, 16 Apr 2024 17:00:35 GMT",
-            id: 1,
+            id: 2,
             title: "React"
         },
     ])
@@ -73,6 +75,13 @@ export default function Home({isLoggedIn, handleClick   }: HomeProps) {
         setSearchTerm(e.target.value);
     }
 
+    const addNewPost = (newPostData: PostFormDataType) => {
+        const author = {id: 1, firstName: 'Garren', lastName:'Hassler', email:"hasslergarren@gmail.com", username: 'ghasslers', dateCreated:  "Tue, 14 Apr 2024 16:58:44 GMT"}
+        const newPost: PostType = {...newPostData, id:posts.length+1, dateCreated:new Date().toString(), author}
+        setPosts([...posts, newPost])
+        setShowForm(false);
+    }
+
     // how to display the navbar without the Navigation.tsx
 
     // return React.createElement(React.Fragment, {}, React.createElement(Navigation, { isLoggedIn }, undefined), React.createElement(Container, {}, React.createElement('h1', {}, 'Hello World')))
@@ -83,7 +92,7 @@ export default function Home({isLoggedIn, handleClick   }: HomeProps) {
                 <Button variant='primary' onClick={handleClick}>Click Me!</Button>
                 <h2>{isLoggedIn ? `Welcome Back` : 'Please Log In or Sign Up'}</h2>
                 <Row>
-                    <Col xs={12} md={8}>
+                    <Col xs={12} md={6}>
                         <Form.Control value={searchTerm} placeholder='Search Posts' onChange={handleInputChange} />
                     </Col>
                     <Col>
@@ -95,7 +104,11 @@ export default function Home({isLoggedIn, handleClick   }: HomeProps) {
                             <option value="titleDesc">Sort By Title DESC</option>
                         </Form.Select>
                     </Col>
+                    <Col>
+                        <Button className='w-100' variant='success' onClick={() => setShowForm(!showForm)}>{showForm ? 'Hide Form' : 'Add Post+'}</Button>
+                    </Col>
                 </Row>
+                { showForm && <PostForm addNewPost={addNewPost} /> }
                 {posts.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase())).map( p => <PostCard key={p.id} post={p} /> )}
         </>
     )

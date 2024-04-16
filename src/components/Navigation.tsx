@@ -10,7 +10,6 @@ type NavigationProps = {
 }
 
 export default function Navigation({ isLoggedIn }:NavigationProps){
-    console.log('Navigation component is being rendered')
 
     const [backgroundTheme, setBackgroundTheme] = useState('dark');
    
