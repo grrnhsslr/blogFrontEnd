@@ -4,6 +4,8 @@ import Navigation from './components/Navigation';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 type Post = {
     id: number,
@@ -35,6 +37,8 @@ export default function App(){
         {id: 5, title: 'its CHEWSDAY INNIT'}
     ])
 
+    const [searchTerm, setSearchTerm] = useState('');
+
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         
         const sortFunctions:Sorting = {
@@ -53,6 +57,9 @@ export default function App(){
         setIsLoggedIn(!isLoggedIn);
     }
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value)
+    }
 
     // how to display the navbar without the Navigation.tsx
 
@@ -63,16 +70,23 @@ export default function App(){
             <Navigation isLoggedIn={isLoggedIn}/>
             <Container>
                 <h1>Hello World</h1>
-                <Button className="my-4" variant='primary' onClick={handleClick}>Click Me!</Button>
-                <h2>{isLoggedIn ? `Welcome Back ${firstName}${lastName}` : 'Please Log In or Sign Up'}</h2>
-                <Form.Select onChange={handleSelectChange}>
-                    <option value="">Choose Sorting Option</option>
-                    <option value='idASC'>Sort by ID ASC</option>
-                    <option value='idDESC'>Sort by ID DESC</option>
-                    <option value='titleASC'>Sort by Title ASC</option>
-                    <option value='titleDESC'>Sort by Title DESC</option>
-                </Form.Select>
-                {posts.map( p => <h4 key={p.id}>{p.title}</h4> )}
+                <Button className='my-5' variant='primary' onClick={handleClick}>Click Me!</Button>
+                <h2>{isLoggedIn ? `Welcome Back ${firstName} ${lastName}` : 'Please Log In or Sign Up'}</h2>
+                <Row>
+                    <Col xs={12} md={8}>
+                        <Form.Control value={searchTerm} placeholder='Search Posts' onChange={handleInputChange} />
+                    </Col>
+                    <Col>
+                        <Form.Select onChange={handleSelectChange}>
+                            <option>Choose Sorting Option</option>
+                            <option value="idAsc">Sort By ID ASC</option>
+                            <option value="idDesc">Sort By ID DESC</option>
+                            <option value="titleAsc">Sort By Title ASC</option>
+                            <option value="titleDesc">Sort By Title DESC</option>
+                        </Form.Select>
+                    </Col>
+                </Row>
+                {posts.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase())).map( p => <h4 key={p.id}>{p.title}</h4> )}
             </Container>
         </>
     )

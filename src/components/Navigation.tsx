@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -7,9 +9,12 @@ type NavigationProps = {
 }
 
 export default function Navigation({ isLoggedIn }:NavigationProps){
+    console.log('Navigation component is being redn')
+
+    const [backgroundTheme, setBackgroundTheme] = useState('dark');
    
     return (
-        <Navbar data-bs-theme='dark' bg='dark' expand='lg'>
+        <Navbar data-bs-theme={backgroundTheme} bg={backgroundTheme} expand='lg'>
             <Container fluid>
                 <Navbar.Brand href='/'>Kekambas Blog</Navbar.Brand>
                 <Navbar.Toggle aria-controls='nav-collapse' />
@@ -26,6 +31,9 @@ export default function Navigation({ isLoggedIn }:NavigationProps){
                                 <Nav.Link href='/'>Log In</Nav.Link>
                             </>
                         )}
+                    </Nav>
+                    <Nav>
+                        <Button onClick={() => setBackgroundTheme(backgroundTheme === 'dark' ? 'light' : 'dark')} >Change Background</Button>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
