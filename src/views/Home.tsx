@@ -22,18 +22,18 @@ type HomeProps = {
     handleClick: () => void
 }
 
-export default function Home({isLoggedIn, handleClick   }: HomeProps) {
+export default function Home({isLoggedIn, handleClick}: HomeProps) {
 
 const [showForm, setShowForm] = useState(false);
     const [posts, setPosts] = useState<PostType[]>([
         {
             author: {
                 dateCreated: "Fri, 29 Mar 2024 16:58:44 GMT",
-                email: "Garrens@codingtemple.com",
-                firstName: "Garren",
+                email: "garren@fake.com",
+                firstName: "garren",
                 id: 1,
-                lastName: "hassler",
-                username: "ghassler"
+                lastName: "Stanton",
+                username: "bstanton"
             },
             body: "We are alive!!!!!!",
             dateCreated: "Fri, 29 Mar 2024 17:00:35 GMT",
@@ -43,17 +43,18 @@ const [showForm, setShowForm] = useState(false);
         {
             author: {
                 dateCreated: "Tue, 14 Apr 2024 16:58:44 GMT",
-                email: "Garrens@codingtemple.com",
-                firstName: "Garren",
+                email: "garren@fake.com",
+                firstName: "garren",
                 id: 1,
-                lastName: "hassler",
-                username: "ghassler"
+                lastName: "Stanton",
+                username: "bstanton"
             },
             body: "I love React!",
             dateCreated: "Tue, 16 Apr 2024 17:00:35 GMT",
             id: 2,
             title: "React"
         },
+         
     ])
 
     const [searchTerm, setSearchTerm] = useState('');
