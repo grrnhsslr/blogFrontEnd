@@ -1,13 +1,15 @@
 import { Card, Form, Button } from "react-bootstrap";
-import { UserFormDataType } from "../types";
+import { CategoryType, UserFormDataType } from "../types";
 import { useState } from "react";
 import InputGroup from "react-bootstrap/esm/InputGroup";
 import { register } from "../lib/apiWrapper";
 
 
-type SignUpProps = {}
+type SignUpProps = {
+  flashMessage: (newMessage:string|undefined, newCategory:CategoryType|undefined) => void
+}
 
-export default function SignUp({}: SignUpProps) {
+export default function SignUp({ flashMessage }: SignUpProps) {
 
   const [UserFormData, setUserFormData] = useState<UserFormDataType>(
     {
@@ -33,11 +35,11 @@ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         let response = await register(UserFormData);
         if (response.error){
-          console.error(response.error);
+          flashMessage(response.error, 'danger');
         }
         else {
           let newUser = response.data!;
-          console.log(`Congrats ${newUser.firstName} ${newUser.lastName} has been creaetd with the username ${newUser.username}`)
+          flashMessage(`Congrats ${newUser.firstName} ${newUser.lastName} has been creaetd with the username ${newUser.username}`, 'success')
         }
     }
 

@@ -38,7 +38,7 @@ async function getAllPosts(): Promise<APIResponse<PostType[]>> {
     let data;
     let error;
     try{
-        const response = await apiClientNoAuth().post(postEndpoint);
+        const response = await apiClientNoAuth().get(postEndpoint);
         data = response.data
     } catch(err) {
         if (axios.isAxiosError(err)){

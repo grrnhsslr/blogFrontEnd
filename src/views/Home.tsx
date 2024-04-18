@@ -31,7 +31,6 @@ const [showForm, setShowForm] = useState(false);
     useEffect(() => {
         async function fetchData(){
             const response = await getAllPosts();
-            console.log(response);
             if (response.data){
                 let posts = response.data;
                 setPosts(posts)
