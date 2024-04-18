@@ -3,6 +3,7 @@ import { CategoryType, UserFormDataType } from "../types";
 import { useState } from "react";
 import InputGroup from "react-bootstrap/esm/InputGroup";
 import { register } from "../lib/apiWrapper";
+import { useNavigate } from "react-router-dom";
 
 
 type SignUpProps = {
@@ -10,6 +11,8 @@ type SignUpProps = {
 }
 
 export default function SignUp({ flashMessage }: SignUpProps) {
+  
+  const navigate = useNavigate();
 
   const [UserFormData, setUserFormData] = useState<UserFormDataType>(
     {
@@ -40,6 +43,7 @@ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         else {
           let newUser = response.data!;
           flashMessage(`Congrats ${newUser.firstName} ${newUser.lastName} has been creaetd with the username ${newUser.username}`, 'success')
+          navigate('/')
         }
     }
 
