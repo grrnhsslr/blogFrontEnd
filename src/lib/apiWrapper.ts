@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { PostType, TokenType, UserFormDataType, UserType } from '../types';
+import { PostType, PostFormDataType, TokenType, UserFormDataType, UserType } from '../types';
 
 
-const baseURL:string = 'https://garrensblog123.onrender.com/'
+const baseURL:string = 'https://kekambas-142-flask-blog-api.onrender.com/'
 const userEndpoint: string = '/users'
 const postEndpoint: string = '/posts'
 const tokenEndpoint: string = '/token'
@@ -102,9 +102,77 @@ async function getAllPosts(): Promise<APIResponse<PostType[]>> {
     return { data, error }
 }
 
+async function createPost(token:string, postData:PostFormDataType): Promise<APIResponse<PostType>> {
+    let data;
+    let error;
+    try{
+        const response = await apiClientTokenAuth(token).post(postEndpoint, postData)
+        data = response.data
+    } catch(err) {
+        if (axios.isAxiosError(err)){
+            error = err.response?.data.error
+        } else {
+            error = 'Something went wrong'
+        }
+    }
+    return { data, error }
+}
+
+async function getPostById(postId:string|number): Promise<APIResponse<PostType>> {
+    let data;
+    let error;
+    try{
+        const response = await apiClientNoAuth().get(postEndpoint + '/' + postId)
+        data = response.data
+    } catch(err) {
+        if (axios.isAxiosError(err)){
+            error = err.response?.data.error || `Post with ID ${postId} does not exist`
+        } else {
+            error = 'Something Went Wrong'
+        }
+    }
+    return { data, error }
+}
+
+async function editPostById(postId:string|number, token:string, editedPostData:PostFormDataType): Promise<APIResponse<PostType>> {
+    let data;
+    let error;
+    try{
+        const response = await apiClientTokenAuth(token).put(postEndpoint + '/' + postId, editedPostData)
+        data = response.data
+    } catch(err) {
+        if (axios.isAxiosError(err)){
+            error = err.response?.data.error || `Post with ID ${postId} does not exist`
+        } else {
+            error = 'Something Went Wrong'
+        }
+    }
+    return { data, error }
+}
+
+async function deletePostById(postId:string|number, token:string): Promise<APIResponse<string>> {
+    let data;
+    let error;
+    try{
+        const response = await apiClientTokenAuth(token).delete(postEndpoint + '/' + postId)
+        data = response.data.success
+    } catch(err) {
+        if (axios.isAxiosError(err)){
+            error = err.response?.data?.error || `Post with ID ${postId} does not exist`
+        } else {
+            error = 'Something went wrong'
+        }
+    }
+    return { data, error }
+}
+
 export {
     register,
     getAllPosts,
     login,
     getMe,
+    createPost,
+    getPostById,
+    editPostById,
+    deletePostById
 }

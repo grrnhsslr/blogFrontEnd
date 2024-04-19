@@ -6,8 +6,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import PostCard from '../components/PostCard';
 import PostForm from '../components/PostForm';
-import { PostFormDataType, PostType, UserType } from '../types';
-import { getAllPosts } from '../lib/apiWrapper';
+import { CategoryType, PostFormDataType, PostType, UserType } from '../types';
+import { getAllPosts, createPost } from '../lib/apiWrapper';
 
 
 type Sorting = {
@@ -21,23 +21,26 @@ type Sorting = {
 type HomeProps = {
     isLoggedIn: Boolean,
     currentUser: UserType|null,
+    flashMessage: (newMessage:string, category:CategoryType) => void
 }
 
-export default function Home({isLoggedIn, currentUser}: HomeProps) {
+export default function Home({isLoggedIn, currentUser, flashMessage}: HomeProps) {
 
 const [showForm, setShowForm] = useState(false);
     const [posts, setPosts] = useState<PostType[]>([])
+    const [fetchPostData, setFetchPostData] = useState(true);
 
     useEffect(() => {
         async function fetchData(){
             const response = await getAllPosts();
             if (response.data){
                 let posts = response.data;
+                posts.sort((a,b)=> (new Date(a.dateCreated)> new Date(b.dateCreated)) ? -1 : 1 )
                 setPosts(posts)
             }
         }
         fetchData();
-    }, [])
+    }, [fetchPostData])
 
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -58,11 +61,17 @@ const [showForm, setShowForm] = useState(false);
         setSearchTerm(e.target.value);
     }
 
-    const addNewPost = (newPostData: PostFormDataType) => {
-        const author = {id: 1, firstName: 'Garren', lastName:'Hassler', email:"hasslergarren@gmail.com", username: 'ghasslers', dateCreated:  "Tue, 14 Apr 2024 16:58:44 GMT"}
-        const newPost: PostType = {...newPostData, id:posts.length+1, dateCreated:new Date().toString(), author}
-        setPosts([...posts, newPost])
-        setShowForm(false);
+    const addNewPost = async (newPostData: PostFormDataType) => {
+        const token = localStorage.getItem('token') || '';
+        const response = await createPost(token, newPostData)
+        if (response.error){
+            flashMessage(response.error, 'danger')
+        }
+        else if (response.data){
+            flashMessage(`${response.data.title} has been created`, 'success')
+            setShowForm(false);
+            setFetchPostData(!fetchPostData);
+        }
     }
 
     
@@ -87,12 +96,14 @@ const [showForm, setShowForm] = useState(false);
                         <option value="titleDesc">Sort By Title DESC</option>
                     </Form.Select>
                 </Col>
-                <Col>
+               {isLoggedIn &&( 
+               <Col>
                     <Button className='w-100' variant='success' onClick={() => setShowForm(!showForm)}>{showForm ? 'Hide Form' : 'Add Post+'}</Button>
                 </Col>
+             )}
             </Row>
             { showForm && <PostForm addNewPost={addNewPost} /> }
-            {posts.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase())).map( p => <PostCard key={p.id} post={p} /> )}
+            {posts.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase())).map( p => <PostCard currentUser={currentUser} key={p.id} post={p} /> )}
     </>
     )
 }
